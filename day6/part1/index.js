@@ -11,21 +11,19 @@ for (let i = 0; i < input.length; i++) {
 	for (let j = 0; j < input[i].length; j++) {
 		if (input[i][j] == '^') {
 			guard = { x: j, y: i, direction: 0 };
+			input[i][j] = '.';
 		}
 	}
 }
 let tiles = [{ x: guard.x, y: guard.y }];
 while (true) {
-	let next;
-	while (true) {
-		next = input[guard.y - directions[guard.direction].y]?.[guard.x + directions[guard.direction].x];
-		if (next == '#' || next == null) break;
+	let next = input[guard.y - directions[guard.direction].y]?.[guard.x + directions[guard.direction].x];
+	if (next == '.') {
 		guard.x += directions[guard.direction].x;
 		guard.y -= directions[guard.direction].y;
 		if (!tiles.find(a => a.x == guard.x && a.y == guard.y)) tiles.push({ x: guard.x, y: guard.y });
-	}
-	if (next == null) break;
-	guard.direction++;
+	} else if (next == null) break;
+	else if (next == '#') guard.direction++;
 	if (guard.direction > 3) guard.direction = 0;
 }
 console.log(tiles.length);

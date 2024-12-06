@@ -11,48 +11,43 @@ for (let i = 0; i < input.length; i++) {
 	for (let j = 0; j < input[i].length; j++) {
 		if (input[i][j] == '^') {
 			guardStart = { x: j, y: i, direction: 0 };
+			input[i][j] = '.';
 		}
 	}
 }
 let guard = { x: guardStart.x, y: guardStart.y, direction: guardStart.direction };
 let tiles = [{ x: guard.x, y: guard.y, i: 0 }];
 while (true) {
-	let next;
-	while (true) {
-		next = input[guard.y - directions[guard.direction].y]?.[guard.x + directions[guard.direction].x];
-		if (next == '#' || next == null) break;
+	let next = input[guard.y - directions[guard.direction].y]?.[guard.x + directions[guard.direction].x];
+	if (next == '.') {
 		guard.x += directions[guard.direction].x;
 		guard.y -= directions[guard.direction].y;
 		if (!tiles.find(a => a.x == guard.x && a.y == guard.y)) tiles.push({ x: guard.x, y: guard.y, i: tiles.length });
-	}
-	if (next == null) break;
-	guard.direction++;
+	} else if (next == null) break;
+	else if (next == '#') guard.direction++;
 	if (guard.direction > 3) guard.direction = 0;
 }
 
 let loops = [];
 for (const tile of tiles) {
-	// console.log(tile)
-	if (input[tile.y][tile.x] != '.') continue;
+	console.log(tile)
+	if (tile.x == guardStart.x && tile.y == guardStart.y) continue;
 	input[tile.y][tile.x] = '#';
 	let looped = false;
 	let guard = { x: guardStart.x, y: guardStart.y, direction: guardStart.direction };
 	let tiles = [{ x: guard.x, y: guard.y, direction: guard.direction }];
 	while (true) {
-		let next;
-		while (true) {
-			next = input[guard.y - directions[guard.direction].y]?.[guard.x + directions[guard.direction].x];
-			if (next == '#' || next == null) break;
+		let next = input[guard.y - directions[guard.direction].y]?.[guard.x + directions[guard.direction].x];
+		if (next == '.') {
 			guard.x += directions[guard.direction].x;
 			guard.y -= directions[guard.direction].y;
-			if (tiles.find(a => a.x == guard.x && a.y == guard.y && a.direction == guard.direction )) {
+			if (tiles.find(a => a.x == guard.x && a.y == guard.y && a.direction == guard.direction)) {
 				looped = true;
 				break;
 			}
 			tiles.push({ x: guard.x, y: guard.y, direction: guard.direction });
-		}
-		if (next == null || looped) break;
-		guard.direction++;
+		} else if (next == null) break;
+		else if (next == '#') guard.direction++;
 		if (guard.direction > 3) guard.direction = 0;
 	}
 	if (looped) loops.push(tile);
