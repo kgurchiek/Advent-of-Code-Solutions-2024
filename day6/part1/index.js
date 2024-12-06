@@ -15,15 +15,16 @@ for (let i = 0; i < input.length; i++) {
 		}
 	}
 }
-let tiles = [{ x: guard.x, y: guard.y }];
+let tiles = new Set();
+tiles.add(`${guard.x},${guard.y}`);
 while (true) {
 	let next = input[guard.y - directions[guard.direction].y]?.[guard.x + directions[guard.direction].x];
 	if (next == '.') {
 		guard.x += directions[guard.direction].x;
 		guard.y -= directions[guard.direction].y;
-		if (!tiles.find(a => a.x == guard.x && a.y == guard.y)) tiles.push({ x: guard.x, y: guard.y });
+		tiles.add(`${guard.x},${guard.y}`);
 	} else if (next == null) break;
 	else if (next == '#') guard.direction++;
 	if (guard.direction > 3) guard.direction = 0;
 }
-console.log(tiles.length);
+console.log(tiles.size);

@@ -30,22 +30,22 @@ while (true) {
 
 let loops = [];
 for (const tile of tiles) {
-	console.log(tile)
 	if (tile.x == guardStart.x && tile.y == guardStart.y) continue;
 	input[tile.y][tile.x] = '#';
 	let looped = false;
 	let guard = { x: guardStart.x, y: guardStart.y, direction: guardStart.direction };
-	let tiles = [{ x: guard.x, y: guard.y, direction: guard.direction }];
+	let tiles = new Set();
+	tiles.add(`${guard.x},${guard.y},${guard.direction}`);
 	while (true) {
 		let next = input[guard.y - directions[guard.direction].y]?.[guard.x + directions[guard.direction].x];
 		if (next == '.') {
 			guard.x += directions[guard.direction].x;
 			guard.y -= directions[guard.direction].y;
-			if (tiles.find(a => a.x == guard.x && a.y == guard.y && a.direction == guard.direction)) {
+			if (tiles.has(`${guard.x},${guard.y},${guard.direction}`)) {
 				looped = true;
 				break;
 			}
-			tiles.push({ x: guard.x, y: guard.y, direction: guard.direction });
+			tiles.add(`${guard.x},${guard.y},${guard.direction}`);
 		} else if (next == null) break;
 		else if (next == '#') guard.direction++;
 		if (guard.direction > 3) guard.direction = 0;
